@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MovieInsights | Movie Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="hero-badge">data-driven insights</div>
+            <h1>Movie<span class="highlight">Insights</span></h1>
+            <p class="subtitle">menjelajahi data film — dari angka hingga cerita</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="total-movies">-</div>
+                <div class="stat-label">total film</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avg-rating">-</div>
+                <div class="stat-label">rata-rata rating</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="year-range">-</div>
+                <div class="stat-label">rentang tahun</div>
+            </div>
+        </div>
+
+        <div class="section" id="dashboard">
+            <div class="section-header">
+                <h2>visual analytics</h2>
+                <span class="section-number">01</span>
+            </div>
+            <div class="charts-row">
+                <div class="chart-box">
+                    <canvas id="ratingChart"></canvas>
+                    <p class="chart-title">distribusi rating film</p>
+                </div>
+                <div class="chart-box">
+                    <canvas id="yearChart"></canvas>
+                    <p class="chart-title">jumlah film per tahun (30 tahun terakhir)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="predict">
+            <div class="section-header">
+                <h2>rating predictor</h2>
+                <span class="section-number">02</span>
+            </div>
+            <p class="section-desc">isi karakteristik film — dapatkan prediksi rating</p>
+            <div class="predict-box">
+                <div class="form-group">
+                    <label>genre (pilih minimal 1)</label>
+                    <div id="genre-checkboxes" class="genre-group"></div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>popularitas <span id="pop-value" class="pop-value-label">50</span></label>
+                        <input type="range" id="popularity" min="0" max="100" value="50" step="1" class="slider-custom">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>tahun rilis</label>
+                        <select id="year" class="select-custom"></select>
+                    </div>
+                </div>
+                
+                <button class="btn-predict" onclick="predictRating()">prediksi rating</button>
+                
+                <div id="prediction-result" class="prediction-result">
+                    <span class="prediction-placeholder">hasil prediksi</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="top10">
+            <div class="section-header">
+                <h2>hall of fame</h2>
+                <span class="section-number">03</span>
+            </div>
+            <p class="section-desc">10 film dengan rating tertinggi sepanjang masa</p>
+            <div id="top10-list" class="movies-grid"></div>
+        </div>
+
+        <div class="section" id="recommend">
+            <div class="section-header">
+                <h2>genre picks</h2>
+                <span class="section-number">04</span>
+            </div>
+            <p class="section-desc">pilih genre — dapatkan 5 film terbaik</p>
+            <div id="recommend-genre-buttons" class="genre-buttons"></div>
+            <div id="recommend-results" class="recommend-results">
+                <div class="placeholder-recommend">pilih genre untuk melihat rekomendasi</div>
+            </div>
+        </div>
+
+        <div class="section" id="search">
+            <div class="section-header">
+                <h2>explore</h2>
+                <span class="section-number">05</span>
+            </div>
+            <p class="section-desc">cari film berdasarkan judul atau genre</p>
+            
+            <div class="search-type">
+                <button class="search-type-btn active" data-type="title">by title</button>
+                <button class="search-type-btn" data-type="genre">by genre</button>
+            </div>
+            
+            <div id="search-title-box" class="search-box">
+                <input type="text" id="search-input" placeholder="contoh: Inception, Parasite, The Dark Knight..." class="input-custom">
+                <button onclick="searchMovie()" class="btn-secondary">search</button>
+            </div>
+            
+            <div id="search-genre-box" class="search-box" style="display: none;">
+                <select id="genre-select" class="select-custom">
+                    <option value="">-- pilih genre --</option>
+                </select>
+                <button onclick="searchByGenre()" class="btn-secondary">search</button>
+            </div>
+            
+            <div id="search-results" class="movies-grid"></div>
+        </div>
+
+        <footer>
+            <p>Movie Insights</p>
+            <p>built with TMDB dataset (1902-2024)</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
