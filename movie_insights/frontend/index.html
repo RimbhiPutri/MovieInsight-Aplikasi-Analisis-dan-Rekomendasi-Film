@@ -12,9 +12,8 @@
 <body>
     <div class="container">
         <div class="hero">
-            <div class="hero-badge">data-driven insights</div>
+            <div class="hero-badge">data film - MovieInsights</div>
             <h1>Movie<span class="highlight">Insights</span></h1>
-            <p class="subtitle">menjelajahi data film — dari angka hingga cerita</p>
         </div>
 
         <div class="stats-grid">
@@ -50,36 +49,45 @@
         </div>
 
         <div class="section" id="predict">
-            <div class="section-header">
-                <h2>rating predictor</h2>
-                <span class="section-number">02</span>
+    <div class="section-header">
+        <h2>rating predictor</h2>
+        <span class="section-number">02</span>
+    </div>
+    <p class="section-desc">isi karakteristik film untuk mendapatkan hasil prediksi</p>
+    <div class="predict-box">
+        <div class="form-group">
+            <label>genre (pilih minimal 1)</label>
+            <div id="genre-checkboxes" class="genre-group"></div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>popularitas <span id="pop-value" class="pop-value-label">50</span></label>
+                <input type="range" id="popularity" min="0" max="100" value="50" step="1" class="slider-custom">
             </div>
-            <p class="section-desc">isi karakteristik film — dapatkan prediksi rating</p>
-            <div class="predict-box">
-                <div class="form-group">
-                    <label>genre (pilih minimal 1)</label>
-                    <div id="genre-checkboxes" class="genre-group"></div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>popularitas <span id="pop-value" class="pop-value-label">50</span></label>
-                        <input type="range" id="popularity" min="0" max="100" value="50" step="1" class="slider-custom">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>tahun rilis</label>
-                        <select id="year" class="select-custom"></select>
-                    </div>
-                </div>
-                
-                <button class="btn-predict" onclick="predictRating()">prediksi rating</button>
-                
-                <div id="prediction-result" class="prediction-result">
-                    <span class="prediction-placeholder">hasil prediksi</span>
-                </div>
+            
+            <div class="form-group">
+                <label>tahun rilis</label>
+                <select id="year" class="select-custom"></select>
             </div>
         </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>jumlah vote <span id="vote-value" class="pop-value-label">1,000</span></label>
+                <input type="range" id="vote_count" min="0" max="50000" value="1000" step="100" class="slider-custom">
+            </div>
+            <div class="form-group">
+            </div>
+        </div>
+        
+        <button class="btn-predict" onclick="predictRating()">prediksi rating</button>
+        
+        <div id="prediction-result" class="prediction-result">
+            <span class="prediction-placeholder">hasil prediksi</span>
+        </div>
+    </div>
+</div>
 
         <div class="section" id="top10">
             <div class="section-header">
