@@ -199,6 +199,14 @@ h1 .highlight::after {
     margin-bottom: 0.5rem;
 }
 
+.form-group small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -268,7 +276,6 @@ h1 .highlight::after {
     margin-left: 0.25rem;
 }
 
-/* Select & Input Custom */
 .select-custom, .input-custom {
     padding: 0.7rem 1rem;
     border-radius: 8px;
@@ -286,6 +293,7 @@ h1 .highlight::after {
     border-color: var(--accent-primary);
 }
 
+/* ========== TOMBOL SEDERHANA (TANPA RIPPLE) ========== */
 .btn-predict {
     background: var(--gradient-warm);
     border: none;
@@ -296,7 +304,7 @@ h1 .highlight::after {
     font-weight: 600;
     font-size: 0.85rem;
     width: 100%;
-    transition: var(--transition);
+    transition: all 0.2s ease;
     font-family: 'Space Grotesk', monospace;
 }
 
@@ -304,6 +312,11 @@ h1 .highlight::after {
     transform: translateY(-2px);
     filter: brightness(1.05);
 }
+
+.btn-predict:active {
+    transform: translateY(0);
+}
+/* ========== SAMPAI SINI ========== */
 
 .btn-secondary {
     background: transparent;
@@ -331,6 +344,7 @@ h1 .highlight::after {
     border-radius: 12px;
     text-align: center;
     border: 1px solid var(--border-subtle);
+    animation: fadeInUp 0.35s ease-out;
 }
 
 .prediction-value {
@@ -427,24 +441,77 @@ h1 .highlight::after {
     background: rgba(255, 183, 3, 0.1);
 }
 
-.movies-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 1.25rem;
-    margin-top: 1rem;
-}
-
-.movie-poster-card {
+.movie-poster-card,
+.similar-movie-card,
+.recommend-card-poster {
     background: var(--bg-card);
     border-radius: 12px;
     overflow: hidden;
-    transition: var(--transition);
     border: 1px solid var(--border-subtle);
+    transition: transform 0.25s ease, 
+                box-shadow 0.25s ease,
+                border-color 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    animation: fadeInScale 0.3s ease-out;
+    animation-fill-mode: both;
 }
 
-.movie-poster-card:hover {
-    transform: translateY(-4px);
+.movie-poster-card:hover,
+.similar-movie-card:hover,
+.recommend-card-poster:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     border-color: var(--accent-secondary);
+}
+
+.movie-poster-card:hover .movie-poster,
+.similar-movie-card:hover .movie-poster,
+.recommend-card-poster:hover .movie-poster {
+    transform: scale(1.05);
+}
+
+.movie-poster-card:hover .poster-overlay,
+.similar-movie-card:hover .poster-overlay,
+.recommend-card-poster:hover .poster-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95), transparent);
+}
+
+.movie-poster-card:hover .movie-rating-badge,
+.similar-movie-card:hover .movie-rating-badge,
+.recommend-card-poster:hover .movie-rating-badge {
+    transform: scale(1.08);
+    background: var(--accent-primary);
+    color: white;
+}
+
+.movie-poster-card:hover .movie-title-poster,
+.similar-movie-card:hover .movie-title-poster,
+.recommend-card-poster:hover .movie-title-poster {
+    color: var(--accent-secondary);
+}
+
+.movie-poster-card::before,
+.similar-movie-card::before,
+.recommend-card-poster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    background: radial-gradient(circle at 30% 20%, rgba(232, 93, 4, 0.12), transparent);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.movie-poster-card:hover::before,
+.similar-movie-card:hover::before,
+.recommend-card-poster:hover::before {
+    opacity: 1;
 }
 
 .poster-container {
@@ -461,10 +528,6 @@ h1 .highlight::after {
     transition: transform 0.3s ease;
 }
 
-.movie-poster-card:hover .movie-poster {
-    transform: scale(1.05);
-}
-
 .poster-overlay {
     position: absolute;
     bottom: 0;
@@ -473,6 +536,7 @@ h1 .highlight::after {
     background: linear-gradient(to top, rgba(26, 26, 26, 0.95), transparent);
     padding: 0.5rem;
     text-align: center;
+    transition: background 0.25s ease;
 }
 
 .movie-rating-badge {
@@ -482,6 +546,7 @@ h1 .highlight::after {
     border-radius: 20px;
     font-size: 0.65rem;
     font-weight: 600;
+    transition: all 0.2s ease;
 }
 
 .movie-info-poster {
@@ -495,6 +560,7 @@ h1 .highlight::after {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    transition: color 0.2s ease;
 }
 
 .movie-year-poster {
@@ -506,6 +572,13 @@ h1 .highlight::after {
     font-size: 0.6rem;
     color: var(--text-muted);
     margin-top: 0.25rem;
+}
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
 }
 
 .recommend-results {
@@ -527,18 +600,14 @@ h1 .highlight::after {
     margin-top: 1rem;
 }
 
-.recommend-card-poster {
-    background: var(--bg-card);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: var(--transition);
-    position: relative;
-    border: 1px solid var(--border-subtle);
+.recommend-card-poster .recommend-rank-badge {
+    transition: all 0.2s ease;
 }
 
-.recommend-card-poster:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent-primary);
+.recommend-card-poster:hover .recommend-rank-badge {
+    transform: scale(1.1);
+    background: var(--accent-primary);
+    color: var(--bg-dark);
 }
 
 .recommend-rank-badge {
@@ -598,6 +667,68 @@ footer {
 footer p:first-child {
     margin-bottom: 0.25rem;
 }
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.movie-poster-card:nth-child(1),
+.similar-movie-card:nth-child(1),
+.recommend-card-poster:nth-child(1) { animation-delay: 0.02s; }
+
+.movie-poster-card:nth-child(2),
+.similar-movie-card:nth-child(2),
+.recommend-card-poster:nth-child(2) { animation-delay: 0.04s; }
+
+.movie-poster-card:nth-child(3),
+.similar-movie-card:nth-child(3),
+.recommend-card-poster:nth-child(3) { animation-delay: 0.06s; }
+
+.movie-poster-card:nth-child(4),
+.similar-movie-card:nth-child(4),
+.recommend-card-poster:nth-child(4) { animation-delay: 0.08s; }
+
+.movie-poster-card:nth-child(5),
+.similar-movie-card:nth-child(5),
+.recommend-card-poster:nth-child(5) { animation-delay: 0.10s; }
+
+.movie-poster-card:nth-child(6),
+.similar-movie-card:nth-child(6),
+.recommend-card-poster:nth-child(6) { animation-delay: 0.12s; }
+
+.movie-poster-card:nth-child(7),
+.similar-movie-card:nth-child(7),
+.recommend-card-poster:nth-child(7) { animation-delay: 0.14s; }
+
+.movie-poster-card:nth-child(8),
+.similar-movie-card:nth-child(8),
+.recommend-card-poster:nth-child(8) { animation-delay: 0.16s; }
+
+.movie-poster-card:nth-child(9),
+.similar-movie-card:nth-child(9),
+.recommend-card-poster:nth-child(9) { animation-delay: 0.18s; }
+
+.movie-poster-card:nth-child(10),
+.similar-movie-card:nth-child(10),
+.recommend-card-poster:nth-child(10) { animation-delay: 0.20s; }
 
 @media (max-width: 768px) {
     .container {
