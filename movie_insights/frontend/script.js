@@ -42,6 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    const voteSlider = document.getElementById('vote_count');
+    const voteValue = document.getElementById('vote-value');
+    if (voteSlider && voteValue) {
+        voteSlider.addEventListener('input', (e) => {
+            voteValue.textContent = parseInt(e.target.value).toLocaleString();
+        });
+    }
+    
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
@@ -198,6 +206,7 @@ async function predictRating() {
         .map(cb => cb.value);
     const popularity = document.getElementById('popularity').value;
     const year = document.getElementById('year').value;
+    const voteCount = document.getElementById('vote_count').value;  
     
     if (selectedGenres.length === 0) {
         alert('Pilih minimal 1 genre!');
@@ -211,20 +220,67 @@ async function predictRating() {
         const res = await fetch(`${API_URL}/predict`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ genres: selectedGenres, popularity: parseInt(popularity), year: parseInt(year) })
+            body: JSON.stringify({ 
+                genres: selectedGenres, 
+                popularity: parseInt(popularity),
+                vote_count: parseInt(voteCount),  
+                year: parseInt(year) 
+            })
         });
         
         const data = await res.json();
+        
+        if (data.error) {
+            resultDiv.innerHTML = `<span class="error-text">${data.error}</span>`;
+            return;
+        }
+        
         const rating = data.predicted_rating;
         const fullStars = Math.floor(rating);
         let starsHtml = '★'.repeat(fullStars) + '☆'.repeat(10 - fullStars);
         
+        let similarMoviesHtml = '';
+        if (data.similar_movies && data.similar_movies.length > 0) {
+            similarMoviesHtml = `
+                <div style="margin-top: 1.5rem; text-align: left; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+                    <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-secondary); margin-bottom: 0.75rem;">
+                        🎬 film rekomendasi berdasarkan prediksi
+                    </div>
+                    <div class="similar-movies-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.75rem;">
+                        ${data.similar_movies.map(movie => `
+                            <div class="similar-movie-card" style="background: var(--bg-elevated); border-radius: 8px; overflow: hidden; transition: var(--transition);">
+                                <div style="aspect-ratio: 2/3; position: relative;">
+                                    <img src="${movie.poster_url}" alt="${movie.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'">
+                                    <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 0.3rem;">
+                                        <span style="background: rgba(0,0,0,0.6); padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.6rem;">⭐ ${movie.rating.toFixed(1)}</span>
+                                    </div>
+                                </div>
+                                <div style="padding: 0.4rem;">
+                                    <div style="font-size: 0.7rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${movie.title}">${movie.title}</div>
+                                    <div style="font-size: 0.6rem; color: var(--text-muted);">${movie.year} | ${movie.vote_count?.toLocaleString() || '?'} votes</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        } else {
+            similarMoviesHtml = `
+                <div style="margin-top: 1rem; font-size: 0.7rem; color: var(--text-muted);">
+                    ℹ️ Tidak ditemukan film dengan genre yang sama.
+                </div>
+            `;
+        }
+        
         resultDiv.innerHTML = `
             <div class="prediction-value">${starsHtml}</div>
             <div class="prediction-number">${rating} / 10</div>
-            <div class="prediction-detail">${selectedGenres.join(', ')} · pop: ${popularity} · thn: ${year}</div>
+            <div class="prediction-detail">${selectedGenres.join(', ')} · pop: ${popularity} · vote: ${parseInt(voteCount).toLocaleString()} · thn: ${year}</div>
+            ${similarMoviesHtml}
         `;
+        
     } catch (error) {
+        console.error('Prediction error:', error);
         resultDiv.innerHTML = '<span class="error-text">gagal memprediksi</span>';
     }
 }
